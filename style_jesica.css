@@ -1,0 +1,22 @@
+:root{
+  --primary:#08306B; --accent:#0072B2; --tint:#DEEBF7;
+  --bg:#F4F7FA; --panel:#FFFFFF;
+  --ink:#1F2933; --mut:#5B6770; --line:#D5DDE5;
+  --ok:#2E7D32; --mid:#E69F00; --low:#D55E00;
+  --hdr-h:64px;
+}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+
+#wg-header{position:fixed;top:0;left:0;right:0;height:var(--hdr-h);z-index:2000;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 16px;background:var(--primary);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+#wg-header h1{margin:0;font-size:18px;font-weight:700;line-height:1.2}
+#wg-header p{margin:2px 0 0;font-size:12px;opacity:.85}
+#wg-reset{font:inherit;font-size:13px;padding:7px 12px;border:1px solid rgba(255,255,255,.6);
+  background:transparent;color:#fff;border-radius:6px;cursor:pointer;white-space:nowrap}
+#wg-reset:hover{background:rgba(255,255,255,.15)}
+#wg-reset:focus-visible{outline:2px solid var(--tint);outline-offset:2px}
+
+#map{position:fixed!important;top:var(--hdr-h);left:0;right:0;bottom:0;width:auto!important;height:auto!important}
+
+@media(max-width:600px){#wg-header h1{font-size:15px}#wg-header p{display:none}}
