@@ -113,3 +113,113 @@
   };
   apply();
 })();
+
+/* ===== Ukuran titik sesuai jenis kantor ===== */
+(function () {
+  var UKURAN = { KCU: 9, KCP: 7, Unit: 5 };
+  WG.data.forEach(function (d) {
+    var r = UKURAN[d.kantor];
+    if (r && d.marker && typeof d.marker.setRadius === 'function') d.marker.setRadius(r);
+  });
+})();
+
+/* ===== Statistik per kecamatan ===== */
+(function () {
+  var body = document.getElementById('wg-panel-body');
+  var box = document.createElement('div');
+  box.id = 'wg-stat';
+  box.innerHTML = '<h3>Jumlah kantor per kecamatan</h3><div id="wg-stat-bars"></div>' +
+                  '<p class="wg-stat-note">Batang oranye = kecamatan dengan kantor paling sedikit.</p>';
+  body.appendChild(box);
+
+  var total = {};
+  WG.data.forEach(function (d) { total[d.kecamatan] = (total[d.kecamatan] || 0) + 1; });
+  var kecs = Object.keys(total).sort(function (a, b) { return total[b] - total[a]; });
+  var maxAll = Math.max.apply(null, kecs.map(function (k) { return total[k]; }));
+
+  function render(list) {
+    var c = {};
+    kecs.forEach(function (k) { c[k] = 0; });
+    list.forEach(function (d) { c[d.kecamatan]++; });
+    var vals = kecs.map(function (k) { return c[k]; });
+    var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+    document.getElementById('wg-stat-bars').innerHTML = kecs.map(function (k) {
+      var low = max > min && c[k] === min;
+      return '<div class="wg-bar' + (low ? ' low' : '') + '">' +
+        '<span>' + k.replace('Banjarmasin ', '') + '</span>' +
+        '<span class="track"><span class="fill" style="width:' + (c[k] / maxAll * 100) + '%"></span></span>' +
+        '<b>' + c[k] + '</b></div>';
+    }).join('');
+  }
+  WG.onChange(render);
+  render(WG.getVisible());
+})();
+
+/* ===== Legenda ===== */
+(function () {
+  function ikon(bentuk, warna, r) {
+    var s = r * 2 + 4, c = s / 2, isi;
+    if (bentuk === 'kotak') isi = '<rect x="2" y="2" width="' + (r * 2) + '" height="' + (r * 2) + '" fill="' + warna + '" stroke="#222" stroke-width="1.5"/>';
+    else if (bentuk === 'segitiga') isi = '<polygon points="' + c + ',2 ' + (s - 2) + ',' + (s - 2) + ' 2,' + (s - 2) + '" fill="' + warna + '" stroke="#222" stroke-width="1.5"/>';
+    else isi = '<circle cx="' + c + '" cy="' + c + '" r="' + r + '" fill="' + warna + '" stroke="#222" stroke-width="1.5"/>';
+    return '<svg width="' + s + '" height="' + s + '" aria-hidden="true">' + isi + '</svg>';
+  }
+  var lg = document.createElement('aside');
+  lg.id = 'wg-legend';
+  lg.innerHTML =
+    '<div id="wg-legend-head"><span>Legenda</span>' +
+    '<button id="wg-legend-toggle" type="button" aria-label="Buka/tutup legenda">−</button></div>' +
+    '<div id="wg-legend-body">' +
+    '<h4>Jenis bank</h4>' +
+    '<div class="wg-lg-row">' + ikon('bulat', '#0072B2', 7) + 'Bank BUMN</div>' +
+    '<div class="wg-lg-row">' + ikon('kotak', '#CC79A7', 7) + 'Bank Swasta</div>' +
+    '<div class="wg-lg-row">' + ikon('segitiga', '#009E73', 7) + 'Bank BPD</div>' +
+    '<h4>Ukuran = jenis kantor</h4>' +
+    '<div class="wg-lg-row">' + ikon('bulat', '#9AA5B1', 9) + 'KCU (kantor cabang utama)</div>' +
+    '<div class="wg-lg-row">' + ikon('bulat', '#9AA5B1', 7) + 'KCP (kantor cabang pembantu)</div>' +
+    '<div class="wg-lg-row">' + ikon('bulat', '#9AA5B1', 5) + 'Unit</div>' +
+    '</div>';
+  document.body.appendChild(lg);
+  var tg = document.getElementById('wg-legend-toggle');
+  tg.addEventListener('click', function () {
+    var tutup = lg.classList.toggle('tutup');
+    tg.textContent = tutup ? '+' : '−';
+  });
+  if (window.innerWidth < 650) { lg.classList.add('tutup'); tg.textContent = '+'; }
+})();
+
+/* ===== Perapian: jumlah kantor di header ikut data ===== */
+(function () {
+  var p = document.querySelector('#wg-header p');
+  if (p) p.textContent = 'Sebaran ' + WG.data.length + ' kantor bank umum di lima kecamatan';
+})();
+
+/* ===== Heatmap: masuk daftar layer + ikut filter ===== */
+(function () {
+  function titik(list) {
+    return list.map(function (d) { return [d.lat, d.lng, 1]; });
+  }
+
+  var heat = L.heatLayer(titik(WG.getVisible()), {
+    radius: 28, blur: 22, maxZoom: 15, minOpacity: 0.35,
+    gradient: {
+      0.0:  'rgba(255,255,178,0)',
+      0.33: '#fecc5c',
+      0.66: '#fd8d3c',
+      1.0:  '#e31a1c'
+    }
+  });
+
+  // pindahkan kanvas ke pane di atas choropleth supaya tidak tertutup
+  heat.on('add', function () {
+    var pane = map.getPane('pane_HeatmapKantorBank_4');
+    if (pane && heat._canvas) {
+      pane.appendChild(heat._canvas);
+      heat._canvas.style.pointerEvents = 'none';
+    }
+  });
+
+  lay.addOverlay(heat, 'Heatmap Kantor Bank');
+
+  WG.onChange(function (list) { heat.setLatLngs(titik(list)); });
+})();
