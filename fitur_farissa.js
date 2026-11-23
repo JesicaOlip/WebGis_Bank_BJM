@@ -1,9 +1,12 @@
+// WFU : FUNGSI BANTU (jarak, jam buka, klasifikasi)
 var WFU = function() {
+  // Konstanta
   var HARI = [ 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min' ];
   var AKSES = {
     baikM: 1e3,
     sedangM: 2500
   };
+  // Escape HTML
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
       return {
@@ -15,16 +18,19 @@ var WFU = function() {
       }[c];
     });
   }
+  // Jarak (haversine)
   function haversine(lat1, lng1, lat2, lng2) {
     var R = 6371e3, r = Math.PI / 180, dLat = (lat2 - lat1) * r, dLng = (lng2 - lng1) * r;
     var x = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
     return 2 * R * Math.asin(Math.sqrt(x));
   }
+  // Format jarak
   function fmtJarak(m) {
     return m < 1e3 ? Math.round(m) + ' m' : (m / 1e3).toLocaleString('id-ID', {
       maximumFractionDigits: 1
     }) + ' km';
   }
+  // Konversi jam
   function menit(t) {
     var p = t.split('.');
     return +p[0] * 60 + (+p[1] || 0);
@@ -32,6 +38,7 @@ var WFU = function() {
   function hhmm(m) {
     return ('0' + Math.floor(m / 60)).slice(-2) + '.' + ('0' + m % 60).slice(-2);
   }
+  // Baca jam operasional
   function parseJam(s) {
     var minggu = [ null, null, null, null, null, null, null ], baris = [];
     String(s || '').split(';').forEach(function(seg) {
@@ -51,6 +58,7 @@ var WFU = function() {
       minggu: minggu
     };
   }
+  // Waktu WITA
   function wita() {
     var d = new Date(Date.now() + 8 * 36e5);
     return {
@@ -58,6 +66,7 @@ var WFU = function() {
       mnt: d.getUTCHours() * 60 + d.getUTCMinutes()
     };
   }
+  // Status buka/tutup
   function status(p, now) {
     now = now || wita();
     var t = p.minggu[now.hari];
@@ -85,9 +94,11 @@ var WFU = function() {
       info: ''
     };
   }
+  // Klasifikasi akses
   function klasifikasi(m) {
     return m <= AKSES.baikM ? 'baik' : m <= AKSES.sedangM ? 'sedang' : 'rendah';
   }
+  // Ekspor
   return {
     esc: esc,
     haversine: haversine,
@@ -100,11 +111,14 @@ var WFU = function() {
   };
 }();
 
+// FITUR DI PETA
 (function() {
+  // Pengaman
   if (!window.map || !window.WG) {
     console.error('fitur_farissa.js: map/WG tidak ditemukan. Pastikan fitur_jesica.js dimuat sebelum file ini.');
     return;
   }
+  // Pengaturan
   var U = WFU, esc = U.esc;
   var RADIUS = 2500;
   var FOTO_DIR = 'images/kantor/';
@@ -115,6 +129,7 @@ var WFU = function() {
     BPD: 'Bank BPD'
   };
   var MOBILE = window.innerWidth < 650;
+  // Data kantor
   var all = WG.data.slice().sort(function(a, b) {
     return a.nama.localeCompare(b.nama, 'id');
   });
@@ -124,9 +139,11 @@ var WFU = function() {
     d.jamP = U.parseJam(d.jam);
     WARNA[d.jenis] = d.grup.warna;
   });
+  // Helper: titik warna
   function dot(jenis) {
     return '<span class="wg-dot" style="background:' + WARNA[jenis] + '"></span>';
   }
+  // Helper: bank terdekat & dalam radius
   function sekitar(lat, lng, pool, skipId) {
     var best = null, bd = Infinity, dalam = [];
     pool.forEach(function(d) {
@@ -144,6 +161,7 @@ var WFU = function() {
       dalam: dalam
     };
   }
+  // Helper: terbang ke kantor
   function goTo(d) {
     var z = Math.max(map.getZoom(), 16), ll = L.latLng(d.lat, d.lng);
     function buka() {
@@ -155,9 +173,12 @@ var WFU = function() {
       duration: .6
     });
   }
+  // Helper: catatan filter
   function noteScope(n) {
     return n < all.length ? '<p class="wf-note">Dihitung dari ' + n + ' dari ' + all.length + ' kantor yang sedang ditampilkan (mengikuti filter).</p>' : '';
   }
+
+  // FOTO KANTOR
   var PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180"><rect width="320" height="180" fill="#DEEBF7"/>' + '<g fill="none" stroke="#08306B" stroke-width="3" stroke-linejoin="round"><path d="M105 76l55-26 55 26z"/>' + '<path d="M118 84v32M146 84v32M174 84v32M202 84v32M108 120h104"/></g>' + '<text x="160" y="152" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#5B6770">Foto kantor belum tersedia</text></svg>');
   function fotoEl(d) {
     var img = new Image, i = 0;
@@ -183,6 +204,8 @@ var WFU = function() {
     img.src = d.foto || FOTO_DIR + d.id + '.' + FOTO_EXT[0];
     return img;
   }
+
+  // POPUP DETAIL BANK
   function popupEl(d) {
     var vis = WG.getVisible(), s = sekitar(d.lat, d.lng, vis, d.id), st = U.status(d.jamP);
     var n = {
@@ -207,6 +230,7 @@ var WFU = function() {
     });
     return el;
   }
+  // Opsi popup
   var popupOpt = {
     className: 'wf-popup',
     minWidth: 260,
@@ -215,6 +239,7 @@ var WFU = function() {
     autoPanPaddingTopLeft: [ 16, 84 ],
     autoPanPaddingBottomRight: [ 16, 16 ]
   };
+  // Pasang popup ke titik
   var aktifId = null, setAktif;
   all.forEach(function(d) {
     d.marker.off('popupopen');
@@ -229,12 +254,16 @@ var WFU = function() {
       if (aktifId === d.id) setAktif(null);
     });
   });
+
+  // DAFTAR KANTOR + PENCARIAN
+  // Panel daftar
   var q = '';
   var panel = document.createElement('aside');
   panel.id = 'wf-list';
   panel.innerHTML = '<div id="wf-list-head"><span>Daftar kantor <span id="wf-list-n"></span></span>' + '<button id="wf-list-toggle" type="button" aria-label="Buka/tutup daftar kantor" aria-expanded="true">−</button></div>' + '<div id="wf-list-body"><input id="wf-cari" type="search" placeholder="Cari nama, bank, alamat, kecamatan" ' + 'aria-label="Cari kantor bank" autocomplete="off"><ul id="wf-ul"></ul>' + '<p id="wf-kosong" hidden>Tidak ada kantor yang cocok.</p></div>';
   document.body.appendChild(panel);
   var ul = document.getElementById('wf-ul'), kosong = document.getElementById('wf-kosong'), cari = document.getElementById('wf-cari'), jml = document.getElementById('wf-list-n'), tog = document.getElementById('wf-list-toggle');
+  // Tampilkan daftar
   function render() {
     var vis = WG.getVisible(), toks = q.toLowerCase().split(/\s+/).filter(Boolean);
     var hasil = all.filter(function(d) {
@@ -252,6 +281,7 @@ var WFU = function() {
     jml.textContent = '(' + (hasil.length === all.length ? all.length : hasil.length + ' dari ' + all.length) + ')';
     return hasil;
   }
+  // Tandai item aktif
   setAktif = function(id) {
     aktifId = id;
     var a = ul.querySelector('.aktif');
@@ -265,6 +295,7 @@ var WFU = function() {
       });
     }
   };
+  // Rapikan panel di HP
   function tutupFilterDiMobile() {
     var f = document.getElementById('wg-panel');
     if (MOBILE && f && !f.classList.contains('tutup')) document.getElementById('wg-panel-toggle').click();
@@ -275,6 +306,7 @@ var WFU = function() {
     tog.textContent = '+';
     tog.setAttribute('aria-expanded', 'false');
   }
+  // Event daftar
   cari.addEventListener('input', function() {
     q = cari.value;
     render();
@@ -300,9 +332,13 @@ var WFU = function() {
     tog.setAttribute('aria-expanded', String(!tutup));
     if (!tutup) tutupFilterDiMobile();
   });
+  // Jalankan awal
   tutupPanelDiMobile();
   WG.onChange(render);
   render();
+
+  // CEK AKSES LOKASI
+  // Kategori akses
   var AK = {
     baik: {
       ikon: '✔',
@@ -323,6 +359,7 @@ var WFU = function() {
       ket: 'Kantor bank terdekat lebih dari ' + U.fmtJarak(U.AKSES.sedangM) + ', di luar jangkauan layanan.'
     }
   };
+  // Tombol & kartu hasil
   var aksesOn = false, grup = L.layerGroup().addTo(map);
   var btn = document.createElement('button');
   btn.id = 'wf-akses-btn';
@@ -337,6 +374,7 @@ var WFU = function() {
   document.body.appendChild(btn);
   document.body.appendChild(card);
   var isi = document.getElementById('wf-akses-isi');
+  // Nyala/mati mode cek
   function setAkses(on) {
     aksesOn = on;
     grup.clearLayers();
@@ -351,6 +389,7 @@ var WFU = function() {
       tutupPanelDiMobile();
     }
   }
+  // Event tombol
   btn.addEventListener('click', function() {
     setAkses(!aksesOn);
   });
@@ -360,6 +399,7 @@ var WFU = function() {
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && aksesOn) setAkses(false);
   });
+  // Proses pengecekan
   function cek(ll) {
     var vis = WG.getVisible(), s = sekitar(ll.lat, ll.lng, vis, null);
     grup.clearLayers();
@@ -397,6 +437,7 @@ var WFU = function() {
       goTo(t);
     });
   }
+  // Tangkap klik peta
   var cont = map.getContainer(), down = null;
   cont.addEventListener('pointerdown', function(e) {
     down = {

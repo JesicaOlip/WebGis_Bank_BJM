@@ -1,49 +1,66 @@
+/* ===== PANEL DAFTAR KANTOR ===== */
+/* kotak utama panel */
 #wf-list{position:fixed;left:274px;bottom:28px;width:300px;max-height:calc(100vh - var(--hdr-h) - 60px);display:flex;flex-direction:column;z-index:1500;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.2);font-size:14px;color:var(--ink)}
+/* header panel + tombol buka/tutup */
 #wf-list-head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--tint);color:var(--primary);font-weight:700;border-radius:10px 10px 0 0}
 #wf-list-n{font-weight:400;color:var(--mut);font-size:13px}
 #wf-list-toggle{font:inherit;width:28px;height:28px;border:1px solid var(--line);background:var(--panel);color:var(--primary);border-radius:6px;cursor:pointer}
+/* isi panel + kondisi tertutup */
 #wf-list-body{display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:10px 12px}
 #wf-list.tutup #wf-list-body{display:none}
 #wf-list.tutup #wf-list-head{border-radius:10px}
+/* kolom pencarian */
 #wf-cari{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit}
 #wf-cari::placeholder{color:var(--mut)}
+/* daftar hasil + pesan kosong */
 #wf-ul{list-style:none;margin:10px -12px -10px;padding:0;flex:1;min-height:0;overflow:auto;border-top:1px solid var(--line)}
 #wf-kosong{margin:10px 0 2px;color:var(--mut)}
+/* item daftar kantor */
 .wf-item{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;text-align:left;padding:8px 12px;border:0;border-bottom:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
 .wf-item:hover{background:var(--tint)}
 .wf-item.aktif{background:var(--tint);box-shadow:inset 3px 0 0 var(--accent)}
 .wf-it{flex:1;min-width:0;display:flex;flex-direction:column}
 .wf-it b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wf-it small{color:var(--mut);font-size:12px}
+/* status buka/tutup di item */
 .wf-itst{font-size:12px;white-space:nowrap}
 .wf-itst.buka{color:var(--ok);font-weight:600}
 .wf-itst.tutup{color:var(--mut)}
+/* outline fokus (keyboard) */
 #wf-list :focus-visible,#wf-akses-card :focus-visible,.wf-popup :focus-visible,#wf-akses-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+/* ===== POPUP KANTOR ===== */
+/* wadah popup + tombol tutup */
 .wf-popup .leaflet-popup-content-wrapper{padding:0;overflow:hidden;border-radius:10px;color:var(--ink)}
 .wf-popup .leaflet-popup-content{margin:0;max-width:none;max-height:none;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
 .wf-popup a.leaflet-popup-close-button{top:6px;right:6px;width:26px;height:26px;padding:0;border-radius:50%;background:rgba(255,255,255,.92);color:var(--primary);font:700 18px/26px system-ui,sans-serif;text-align:center}
 .wf-pop{width:100%}
+/* foto */
 .wf-foto{aspect-ratio:16/9;background:var(--tint)}
 .wf-foto img{display:block;width:100%;height:100%;object-fit:cover}
 .wf-foto img.kosong{object-fit:contain}
+/* isi teks: tipe, nama, alamat, subjudul */
 .wf-body{padding:10px 14px 12px}
 .wf-tipe{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mut)}
 .wf-body h3{margin:4px 0;font-size:16px;line-height:1.25;color:var(--primary)}
 .wf-alamat{margin:0;font-size:13px;color:var(--mut)}
 .wf-body h4{margin:12px 0 4px;font-size:13px;color:var(--mut);font-weight:600}
+/* badge status buka/tutup */
 .wf-st{display:inline-flex;align-items:center;gap:6px;margin:0;padding:3px 10px;border:1.5px solid;border-radius:999px;font-weight:600;font-size:13px;color:var(--ink)}
 .wf-st small{font-weight:400;color:var(--mut)}
 .wf-st.buka{border-color:var(--ok);background:#E8F3E9}
 .wf-st.buka>span{color:var(--ok)}
 .wf-st.tutup{border-color:var(--mut);background:#EEF1F4}
+/* jam operasional */
 .wf-jam{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;margin:8px 0 0;font-size:13px}
 .wf-jam dt{color:var(--mut)}
 .wf-jam dd{margin:0}
+/* tombol kantor terdekat */
 .wf-near{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;text-align:left;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
 .wf-near:hover{background:var(--tint)}
 .wf-near-n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wf-near b{color:var(--primary);white-space:nowrap}
+/* info radius + rincian */
 .wf-mut{margin:0;color:var(--mut)}
 .wf-rad{margin:0}
 .wf-rad b{font-size:22px;color:var(--primary)}
@@ -52,28 +69,39 @@
 .wf-rinci b{margin-left:auto}
 .wf-note{margin:8px 0 0;font-size:12px;color:var(--mut)}
 
+/* ===== TOMBOL + KARTU AKSESIBILITAS ===== */
+/* tombol pemicu */
 #wf-akses-btn{position:fixed;top:calc(var(--hdr-h) + 12px);left:50%;transform:translateX(-50%);z-index:1600;font:inherit;font-size:14px;font-weight:600;padding:8px 14px;border:2px solid var(--primary);border-radius:999px;background:var(--panel);color:var(--primary);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);white-space:nowrap}
 #wf-akses-btn:hover{background:var(--tint)}
 #wf-akses-btn.on{background:var(--primary);color:#fff}
+/* kartu hasil */
 #wf-akses-card{position:fixed;top:calc(var(--hdr-h) + 60px);left:50%;transform:translateX(-50%);width:min(340px,calc(100vw - 24px));max-height:calc(100vh - var(--hdr-h) - 90px);overflow:auto;z-index:1600;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.25);font-size:14px;color:var(--ink)}
 #wf-akses-card[hidden]{display:none}
+/* header kartu + tombol tutup */
 #wf-akses-head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--tint);color:var(--primary);font-weight:700;border-radius:10px 10px 0 0}
 #wf-akses-x{font:inherit;width:28px;height:28px;border:1px solid var(--line);background:var(--panel);color:var(--primary);border-radius:6px;cursor:pointer}
+/* isi kartu */
 #wf-akses-isi{padding:4px 12px 12px}
 #wf-akses-isi p{margin:8px 0}
+/* label tingkat akses: baik / sedang / rendah */
 .wf-ak{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1.5px solid;border-left-width:6px;border-radius:8px;font-weight:700;font-size:16px;color:var(--ink)}
 .wf-ak.baik{border-color:var(--ok);background:#E8F3E9}
 .wf-ak.sedang{border-color:var(--mid);background:#FDF3DC}
 .wf-ak.rendah{border-color:var(--low);background:#FBE9DD}
+/* daftar detail */
 .wf-akdl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0}
 .wf-akdl dt{color:var(--mut)}
 .wf-akdl dd{margin:0}
 .wf-akdl small{color:var(--mut)}
+/* tombol "lihat" */
 #wf-lihat{font:inherit;width:100%;padding:7px;border:1px solid var(--primary);background:var(--panel);color:var(--primary);border-radius:6px;cursor:pointer}
 #wf-lihat:hover{background:var(--tint)}
+/* kursor saat mode akses aktif */
 .wf-akses-on,.wf-akses-on .leaflet-interactive{cursor:crosshair!important}
+/* pin penanda lokasi di peta */
 .wf-pin{box-sizing:border-box;width:22px;height:22px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 2px var(--primary),0 1px 4px rgba(0,0,0,.4)}
 
+/* ===== RESPONSIF (LAYAR KECIL) ===== */
 @media(max-width:650px){
   #wf-list{left:12px;right:12px;width:auto;bottom:84px;max-height:55vh}
 }
