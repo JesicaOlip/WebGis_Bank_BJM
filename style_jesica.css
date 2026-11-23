@@ -90,3 +90,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
   #wg-header{padding:0 10px}
   #wg-reset{padding:6px 8px;font-size:12px}
 }
+
+/* ===== NAVIGASI HEADER (LINK KE BERANDA) ===== */
+#wg-nav{display:flex;align-items:center;gap:10px}
+#wg-nav a{font-size:13px;padding:7px 12px;border:1px solid rgba(255,255,255,.6);border-radius:6px;color:#fff;text-decoration:none;white-space:nowrap}
+#wg-nav a:hover{background:rgba(255,255,255,.15)}
+#wg-nav a:focus-visible{outline:2px solid var(--tint);outline-offset:2px}
+@media(max-width:420px){#wg-nav a{padding:6px 8px;font-size:12px}}

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beranda | WebGIS Kantor Bank Kota Banjarmasin</title>
+<link rel="stylesheet" href="beranda.css">
+</head>
+<body>
+
+<!-- NAVIGASI -->
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#atas">WebGIS Bank Banjarmasin</a>
+    <nav aria-label="Menu utama">
+      <ul>
+        <li><a href="#atas">Beranda</a></li>
+        <li><a href="#sebaran">Sebaran</a></li>
+        <li><a href="#fitur">Fitur</a></li>
+        <li><a href="index.html">Peta</a></li>
+    </ul>
+    </nav>
+    <a class="btn kecil" href="index.html">Buka peta</a>
+  </div>
+</header>
+
+<main id="atas">
+  <!-- HERO + KARTU STATISTIK -->
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Di mana saja kantor bank di Kota Banjarmasin?</h1>
+        <p>Lihat sebaran kantor bank umum di lima kecamatan, cari yang terdekat, dan cek apakah lokasimu terjangkau.</p>
+        <div class="aksi">
+          <a class="btn" href="index.html">Buka peta</a>
+          <a class="btn garis" href="#sebaran">Lihat ringkasan data</a>
+        </div>
+      </div>
+      <div class="stat" aria-live="polite">
+        <div class="kartu-stat besar"><b id="s-total">–</b><span>kantor bank umum</span></div>
+        <div class="kartu-stat"><b id="s-bumn">–</b><span><i class="dot" style="background:var(--bumn)"></i>Bank BUMN</span></div>
+        <div class="kartu-stat"><b id="s-swasta">–</b><span><i class="dot" style="background:var(--swasta)"></i>Bank swasta</span></div>
+        <div class="kartu-stat besar"><b id="s-bpd">–</b><span><i class="dot" style="background:var(--bpd)"></i>Bank BPD (daerah)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UCAPAN SELAMAT DATANG -->
+    <section class="selamat" id="selamat">
+    <div class="wrap selamat-grid">
+        <div>
+        <h2>Selamat datang di WebGIS Kantor Bank Banjarmasin</h2>
+        <p>Situs ini menampilkan sebaran kantor bank umum di Kota Banjarmasin dalam satu peta interaktif. Kamu bisa melihat di mana kantor bank berkumpul, kecamatan mana yang masih sedikit, dan seberapa jauh kantor terdekat dari lokasimu.</p>
+        <p>Dibuat oleh Jesica dan Farissa sebagai proyek WebGIS.</p>
+        </div>
+        <div class="baca-peta">
+        <h3>Cara membaca peta</h3>
+        <ul>
+            <li><span><b>Warna dan bentuk titik</b> menunjukkan jenis bank: bulat biru untuk BUMN, kotak merah muda untuk swasta, segitiga hijau untuk BPD.</span></li>
+            <li><span><b>Ukuran titik</b> menunjukkan jenis kantor: KCU paling besar, lalu KCP, lalu Unit.</span></li>
+            <li><span><b>Warna wilayah</b> menunjukkan jumlah kantor di tiap kecamatan. Makin gelap, makin banyak.</span></li>
+        </ul>
+        <a class="btn" href="index.html">Buka peta</a>
+        </div>
+    </div>
+    </section>
+
+  <!-- SEBARAN PER KECAMATAN -->
+  <section id="sebaran">
+    <div class="wrap">
+      <h2>Sebaran kantor per kecamatan</h2>
+      <p class="sub">Kantor menumpuk di pusat kota. Batang oranye menandai kecamatan dengan kantor paling sedikit.</p>
+      <div class="sebaran">
+        <div>
+          <div id="bars"></div>
+          <p class="catatan">Dihitung langsung dari data peta.</p>
+        </div>
+        <div class="jenis" id="jenis-kantor"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR PETA -->
+  <section class="fitur" id="fitur">
+    <div class="wrap">
+      <h2>Yang bisa kamu lakukan di peta</h2>
+      <p class="sub">Semua fitur ada di satu halaman peta, tanpa perlu pindah-pindah.</p>
+      <div class="grid">
+        <article><h3>Filter kantor</h3><p>Saring berdasarkan jenis bank, jenis kantor, dan kecamatan.</p></article>
+        <article><h3>Cari dan telusuri</h3><p>Cari nama, bank, atau alamat, lalu klik hasilnya untuk melihat detail kantor.</p></article>
+        <article><h3>Cek akses lokasi</h3><p>Klik satu titik di peta untuk tahu seberapa dekat kantor bank terdekat.</p></article>
+        <article><h3>Peta panas dan kepadatan</h3><p>Lihat area padat dan area yang belum terlayani bank.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- AJAKAN MASUK KE PETA -->
+  <section class="cta">
+    <div class="wrap">
+      <h2>Siap menjelajah?</h2>
+      <p class="sub" style="margin-inline:auto">Peta akan terbuka dengan seluruh kantor langsung tampil.</p>
+      <a class="btn" href="index.html">Buka peta</a>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer id="tentang">
+  <div class="wrap">
+    <span>WebGIS Kantor Bank Kota Banjarmasin. Dibuat oleh Jesica dan Farissa.</span>
+    <span>Peta dasar: Esri. Dibuat dengan QGIS (qgis2web) dan Leaflet.</span>
+  </div>
+</footer>
+
+<!-- DATA (sama dengan yang dipakai peta) -->
+<script src="data/BankBUMN_11.js"></script>
+<script src="data/BankSwasta_10.js"></script>
+<script src="data/BankBPD_9.js"></script>
+<script>
+// HITUNG STATISTIK DARI DATA
+(function () {
+  function fitur(nama) {
+    try { return window[nama].features || []; } catch (e) { return []; }
+  }
+  var grup = {
+    bumn: fitur('json_BankBUMN_11'),
+    swasta: fitur('json_BankSwasta_10'),
+    bpd: fitur('json_BankBPD_9')
+  };
+  var semua = grup.bumn.concat(grup.swasta, grup.bpd);
+  if (!semua.length) return; // data tidak terbaca: angka tetap "–"
+
+  // KARTU STATISTIK
+  document.getElementById('s-total').textContent = semua.length;
+  ['bumn', 'swasta', 'bpd'].forEach(function (k) {
+    document.getElementById('s-' + k).textContent = grup[k].length;
+  });
+
+  // BATANG PER KECAMATAN
+  var per = {};
+  semua.forEach(function (f) {
+    var k = f.properties['Kecamatan'];
+    if (k) per[k] = (per[k] || 0) + 1;
+  });
+  var kecs = Object.keys(per).sort(function (a, b) { return per[b] - per[a]; });
+  var maks = per[kecs[0]], min = per[kecs[kecs.length - 1]];
+  document.getElementById('bars').innerHTML = kecs.map(function (k) {
+    var low = maks > min && per[k] === min;
+    return '<div class="bar' + (low ? ' low' : '') + '"><span>' + k.replace('Banjarmasin ', '') +
+           '</span><span class="track"><span class="fill" style="width:' + (per[k] / maks * 100) +
+           '%"></span></span><b>' + per[k] + '</b></div>';
+  }).join('');
+
+  // JUMLAH PER JENIS KANTOR
+  var jk = { KCU: 0, KCP: 0, Unit: 0 };
+  semua.forEach(function (f) {
+    var j = f.properties['Jenis Kant'];
+    if (j in jk) jk[j]++;
+  });
+  var ket = { KCU: 'Kantor cabang utama', KCP: 'Kantor cabang pembantu', Unit: 'Unit' };
+  document.getElementById('jenis-kantor').innerHTML = Object.keys(jk).map(function (j) {
+    return '<div><span>' + ket[j] + ' (' + j + ')</span><b>' + jk[j] + '</b></div>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

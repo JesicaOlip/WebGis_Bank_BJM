@@ -6,7 +6,8 @@
   h.innerHTML =
     '<div><h1>WebGIS Kantor Bank Kota Banjarmasin</h1>' +
     '<p>Sebaran 62 kantor bank umum di lima kecamatan</p></div>' +
-    '<button id="wg-reset" type="button">Kembali ke Banjarmasin</button>';
+    '<nav id="wg-nav"><a href="beranda.html">Beranda</a>' +
+    '<button id="wg-reset" type="button">Kembali ke Banjarmasin</button></nav>';
   document.body.insertBefore(h, document.body.firstChild);
 
   // tombol reset posisi peta
